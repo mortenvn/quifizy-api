@@ -1,3 +1,8 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from api.serializers import CategorySerializer, SongSerializer
+from api.models import Category, Song
 
-# Create your views here.
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
