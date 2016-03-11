@@ -7,15 +7,15 @@ class Category(models.Model):
     """
     Super nice documentation
     """
-    name = models.charField(max_length=100)
+    name = models.CharField(max_length=100)
 
     def __unicode__(self):
         return self.name
 
 
 class Song(models.Model):
-    spotify_uri = models.charField(max_length=22)
-    category = models.manyToManyField(Category)
+    spotify_uri = models.CharField(max_length=22)
+    category = models.ManyToManyField(Category)
 
     def __unicode__(self):
         return self.spotify_uri
