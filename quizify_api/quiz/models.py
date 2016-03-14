@@ -20,6 +20,7 @@ class Game(models.Model):
 
 class Round(models.Model):
     category = models.ForeignKey(Category)
+    game = models.ForeignKey(Game, related_name='rounds', null=True)  # Todo: Fjern null = True
 
     STATUS_TYPES = (
         ('active', 'active'),
@@ -28,7 +29,7 @@ class Round(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_TYPES)
     whos_turn = models.ForeignKey(Player, related_name='whos_turn')
-    winner = models.ForeignKey(Player, related_name='winner')
+    winner = models.ForeignKey(Player, related_name='winner', blank=True, null=True)
 
 
 class Score(models.Model):
@@ -38,7 +39,7 @@ class Score(models.Model):
 
 
 class Question(models.Model):
-    round = models.ForeignKey(Round)
+    round = models.ForeignKey(Round, related_name='questions')
     correct_answer = models.ForeignKey(Song, related_name='correct_answer')
     alternatives = models.ManyToManyField(Song, related_name='alternatives')
     score_player1 = models.ForeignKey(Score, related_name='score_player1')

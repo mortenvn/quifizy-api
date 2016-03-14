@@ -20,6 +20,7 @@ from api import views
 
 router = routers.DefaultRouter()
 router.register(r'categories', views.CategoryViewSet)
+router.register(r'games', views.GameViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
