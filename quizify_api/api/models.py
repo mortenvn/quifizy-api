@@ -36,4 +36,26 @@ class Game(models.Model):
     invitation_status = models.CharField(max_length=20, choices=INVITATION_STATUS_TYPES)
 
 
-#class Round(models.Model):
+class Round(models.Model):
+    category = models.ForeignKey(Category)
+
+    STATUS_TYPES = (
+        ('active', 'active'),
+        ('completed', 'completed'),
+    )
+
+    status = models.CharField(max_length=20, choices=STATUS_TYPES)
+    whos_turn = models.ForeignKey(Player, related_name='whos_turn')
+    winner = models.ForeignKey(Player, related_name='winner')
+
+class Score(models.Model):
+    player = models.ForeignKey(Player)
+    answer_time = models.DurationField()
+    answered_correctly = models.BooleanField()
+
+class Question(models.Model):
+    round = models.ForeignKey(Round)
+    correct_answer = models.ForeignKey(Song, related_name='correct_answer')
+    alternatives = models.ManyToManyField(Song, related_name='alternatives')
+    score_player1 = models.ForeignKey(Score, related_name='score_player1')
+    score_player2 = models.ForeignKey(Score, related_name='score_player2')
