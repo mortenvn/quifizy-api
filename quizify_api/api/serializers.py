@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models import Category, Song
+from songs.models import Category, Song
 
 
 class SongSerializer(serializers.HyperlinkedModelSerializer):
