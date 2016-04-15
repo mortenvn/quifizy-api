@@ -1,3 +1,13 @@
 Django==1.9.4
+PyJWT==1.4.0
+django-braces==1.8.1
+django-oauth-toolkit==0.10.0
+django-rest-framework-social-oauth2==1.0.4
 djangorestframework==3.3.2
+oauthlib==1.0.3
+python-openid==2.2.5
+python-social-auth==0.2.16
+requests==2.9.1
+requests-oauthlib==0.6.1
+six==1.10.0
 wsgiref==0.1.2
