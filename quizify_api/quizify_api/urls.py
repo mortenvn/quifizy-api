@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
-from api import views
+from quiz.views import CategoryViewSet, GameViewSet
 
 router = routers.DefaultRouter()
-router.register(r'categories', views.CategoryViewSet)
-router.register(r'games', views.GameViewSet)
+router.register(r'categories', CategoryViewSet)
+router.register(r'games', GameViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

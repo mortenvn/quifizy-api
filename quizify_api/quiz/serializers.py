@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
-from accounts.models import Player
 from songs.models import Category, Song
 from quiz.models import *
+from accounts.serializers import PlayerSerializer
 
 
 class SongSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,17 +17,6 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name', 'songs')
-
-
-class PlayerSerializer(serializers.HyperlinkedModelSerializer):
-    username = serializers.SerializerMethodField()
-
-    def get_username(self, obj):
-        return User.objects.get(id=obj.id).username
-
-    class Meta:
-        model = Player
-        fields = ('id', 'username')
 
 
 class ScoreSerializer(serializers.HyperlinkedModelSerializer):
