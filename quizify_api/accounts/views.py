@@ -4,8 +4,9 @@ from rest_framework import status
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.timezone import now, timedelta
+from oauthlib.common import generate_token
 
-from serializers import RegisterUserSerializer, PlayerSerializer
+from serializers import RegisterUserSerializer
 from models import Player
 from oauth2_provider.models import Application, AccessToken
 
@@ -20,28 +21,10 @@ def register(request):
     password = qp['password'].value
 
     user = User.objects.create_user(username, email, password)
-    player = Player.objects.create(user=user)
+    Player.objects.create(user=user)
 
-    # TODO: Return auth token
-    # auth_app_name = settings.AUTH_APPLICATION_NAME
-    # app = Application.objects.get(name=auth_app_name)
-    # token, created = AccessToken.objects.get_or_create(user=user, expires=now() + timedelta(days=1), application=app)
-    # print "========"
-    # print token
-    # print created
-    # print "========"
+    auth_app_name = settings.AUTH_APPLICATION_NAME
+    app = Application.objects.get(name=auth_app_name)
+    token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
 
-    return Response({'player': PlayerSerializer(player).data}, status=status.HTTP_201_CREATED)
-
-
-
-    # serialized = UserSerializer(data=request.DATA)
-    # if serialized.is_valid():
-    #     User.objects.create_user(
-    #         serialized.init_data['email'],
-    #         serialized.init_data['username'],
-    #         serialized.init_data['password']
-    #     )
-    #     return Response(serialized.data, status=status.HTTP_201_CREATED)
-    # else:
-    #     return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'token': token}, status=status.HTTP_201_CREATED)
