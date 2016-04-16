@@ -25,6 +25,6 @@ def register(request):
 
     auth_app_name = settings.AUTH_APPLICATION_NAME
     app = Application.objects.get(name=auth_app_name)
-    token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
+    access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
 
-    return Response({'token': token}, status=status.HTTP_201_CREATED)
+    return Response({'token': access_token.token}, status=status.HTTP_201_CREATED)
