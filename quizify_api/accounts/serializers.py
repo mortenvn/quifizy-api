@@ -12,3 +12,8 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Player
         fields = ('id', 'username')
+
+class RegisterUserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField()
