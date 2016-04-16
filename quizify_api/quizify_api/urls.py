@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from quiz.views import CategoryViewSet, GameViewSet
+from accounts.views import register
 
 router = routers.DefaultRouter()
 router.register(r'categories', CategoryViewSet)
@@ -26,4 +27,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
+    url(r'^register/', register),
 ]

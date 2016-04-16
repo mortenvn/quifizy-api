@@ -121,6 +121,8 @@ AUTHENTICATION_BACKENDS = (
    'django.contrib.auth.backends.ModelBackend',
 )
 
+AUTH_APPLICATION_NAME = 'quizify'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
