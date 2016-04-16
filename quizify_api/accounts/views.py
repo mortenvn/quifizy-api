@@ -1,14 +1,25 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
+from rest_framework import permissions
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.timezone import now, timedelta
 from oauthlib.common import generate_token
 
-from serializers import RegisterUserSerializer
+from serializers import RegisterUserSerializer, PlayerSerializer
 from models import Player
 from oauth2_provider.models import Application, AccessToken
+
+
+class PlayerViewSet(viewsets.ModelViewSet):
+    queryset = Player.objects.all()
+    http_method_names = ('get',)
+    # authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PlayerSerializer
+
 
 @api_view(['POST'])
 def register(request):
@@ -19,12 +30,12 @@ def register(request):
     username = qp['username'].value
     email = qp['email'].value
     password = qp['password'].value
+    client_id = qp['client_id'].value
 
+    app = Application.objects.get(client_id=client_id)
     user = User.objects.create_user(username, email, password)
     Player.objects.create(user=user)
 
-    auth_app_name = settings.AUTH_APPLICATION_NAME
-    app = Application.objects.get(name=auth_app_name)
     access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
 
     return Response({'token': access_token.token}, status=status.HTTP_201_CREATED)
