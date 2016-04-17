@@ -15,7 +15,6 @@ class Command(BaseCommand):
         for song in songs:
             if not song.url or not song.artist or not song.name:
                 data = self.get_spotify_data(song.spotify_uri)
-                print data
                 song.artist = data['artists'][0]['name']
                 song.name = data['name']
                 song.url = data['preview_url']
