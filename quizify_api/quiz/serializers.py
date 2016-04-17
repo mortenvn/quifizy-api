@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault
 
 from songs.models import Category, Song
 from quiz.models import *
@@ -56,3 +57,20 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Game
         fields = ('id', 'player1', 'player2', 'invitation_status', 'rounds')
+
+
+class NewGameSerializer(serializers.Serializer):
+    player2 = serializers.CharField()
+
+    def validate(self, data):
+        player2_id = data['player2']
+        try:
+            player2 = Player.objects.get(id=player2_id)
+            if not player2:
+                print "Oi"
+                raise serializers.ValidationError("Invalid player id")
+        except Exception, e:
+            print e
+            raise serializers.ValidationError("Invalid player id")
+
+        return data

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 from accounts.models import Player
 
+
 class PlayerSerializer(serializers.HyperlinkedModelSerializer):
     username = serializers.SerializerMethodField()
 
@@ -13,7 +14,9 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
         model = Player
         fields = ('id', 'username')
 
+
 class RegisterUserSerializer(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.EmailField()
     password = serializers.CharField()
+    client_id = serializers.CharField()
