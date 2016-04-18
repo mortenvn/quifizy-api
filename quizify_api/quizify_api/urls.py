@@ -17,11 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from quiz.views import CategoryViewSet, GameViewSet
-from accounts.views import register, debug
+from accounts.views import register, debug, PlayerViewSet
 
 router = routers.DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'games', GameViewSet)
+router.register(r'players', PlayerViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
