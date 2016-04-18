@@ -28,3 +28,9 @@ def register(request):
     access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
 
     return Response({'token': access_token.token}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def debug(request):
+    print request.data
+    return Response({'token': 'hoi'})
