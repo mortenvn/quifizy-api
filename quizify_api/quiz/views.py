@@ -69,3 +69,18 @@ def accept_invite(request):
     test = GameSerializer(game, context={'request': request}).data
 
     return Response(data=test, status=status.HTTP_201_CREATED)
+
+
+# @api_view(['POST'])
+# def new_round(request):
+#     # TODO: Check that it is users turn
+#     game = Game.objects.get(id=game_id)
+#     if not game.player2.id == request.user.player.id:
+#         return Response(data={"non_field_errors": ["Not permitted"]}, status=status.HTTP_403_FORBIDDEN)
+#
+#     category = Category.objects.get(id=category_id)
+#     new_round = generate_round(game, category, request.user.player)
+#     # TODO: Send notification to player1
+#     test = GameSerializer(game, context={'request': request}).data
+#
+#     return Response(data=test, status=status.HTTP_201_CREATED)

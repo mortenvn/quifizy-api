@@ -32,11 +32,15 @@ def register(request):
     password = qp['password'].value
     client_id = qp['client_id'].value
 
-    app = Application.objects.get(client_id=client_id)
-    user = User.objects.create_user(username, email, password)
-    Player.objects.create(user=user)
-
-    access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
+    try:
+        app = Application.objects.get(client_id=client_id)
+        user = User.objects.create_user(username, email, password)
+        if not app:
+            return Response({'error': 'Invalid client id'}, status=status.HTTP_403_FORBIDDEN)
+        Player.objects.create(user=user)
+        access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
+    except:
+        return Response({'error': 'Invalid client id'}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response({'token': access_token.token}, status=status.HTTP_201_CREATED)
 
