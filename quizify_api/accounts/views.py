@@ -53,6 +53,8 @@ def login(request):
 
     app = Application.objects.get(client_id=client_id)
     user = User.objects.get(username=username)
+    if not user:
+        return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
     if not user.check_password(password):
         return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
 
