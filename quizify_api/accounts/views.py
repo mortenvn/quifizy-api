@@ -57,6 +57,8 @@ def login(request):
         return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
     if not user.check_password(password):
         return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
+    if not app:
+        return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
 
     access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
 
