@@ -2,12 +2,14 @@ from rest_framework import permissions, status, viewsets
 # from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Q
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from permissions import PartOfGame
-from serializers import CategorySerializer, SongSerializer, GameSerializer, NewGameSerializer
+from serializers import CategorySerializer, RoundSerializer, GameSerializer, NewGameSerializer, InviteSerializer
 from models import Game
 from accounts.models import Player
 from songs.models import Category
+from utils import generate_round
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -37,9 +39,33 @@ class GameViewSet(viewsets.ModelViewSet):
         player2_id = qp['player2'].value
         player2 = Player.objects.get(id=player2_id)
         if player2.id == request.user.player.id:
-            return Response(data={"non_field_errors": ["Player cannot play itself"]})
+            return Response(data={"non_field_errors": ["Player cannot play itself"]}, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: Send notification to player2
         new_game = Game.objects.create(player1=request.user.player, player2=player2, invitation_status='sent')
 
         return Response(data=GameSerializer(new_game).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def accept_invite(request):
+    qp = InviteSerializer(data=request.data)
+    if not qp.is_valid():
+        return Response(data=qp.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    game_id = qp['game'].value
+    category_id = qp['category'].value
+
+    game = Game.objects.get(id=game_id)
+    if not game.player2.id == request.user.player.id:
+        return Response(data={"non_field_errors": ["Not permitted"]}, status=status.HTTP_403_FORBIDDEN)
+
+    game.invitation_status = 'accepted'
+    game.save()
+
+    category = Category.objects.get(id=category_id)
+    new_round = generate_round(game, category, request.user.player)
+    # TODO: Send notification to player1
+    test = GameSerializer(game, context={'request': request}).data
+
+    return Response(data=test, status=status.HTTP_201_CREATED)

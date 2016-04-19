@@ -9,7 +9,7 @@ from accounts.serializers import PlayerSerializer
 class SongSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Song
-        fields = ('id', 'spotify_uri')
+        fields = ('id', 'spotify_uri', 'name', 'artist', 'url')
 
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
@@ -67,10 +67,27 @@ class NewGameSerializer(serializers.Serializer):
         try:
             player2 = Player.objects.get(id=player2_id)
             if not player2:
-                print "Oi"
                 raise serializers.ValidationError("Invalid player id")
         except Exception, e:
-            print e
             raise serializers.ValidationError("Invalid player id")
 
+        return data
+
+
+class InviteSerializer(serializers.Serializer):
+    game = serializers.IntegerField()
+    category = serializers.IntegerField()
+
+    def validate(self, data):
+        game_id = data['game']
+        category_id = data['category']
+        try:
+            game = Game.objects.get(id=game_id)
+            category = Category.objects.get(id=category_id)
+            if not game:
+                raise serializers.ValidationError("Invalid game id")
+            if not category:
+                raise serializers.ValidationError("Invalid category id")
+        except:
+            raise serializers.ValidationError("Invalid request")
         return data

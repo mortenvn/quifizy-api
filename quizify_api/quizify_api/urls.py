@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
-from quiz.views import CategoryViewSet, GameViewSet
+from quiz.views import CategoryViewSet, GameViewSet, accept_invite
 from accounts.views import register, PlayerViewSet, login
 
 router = routers.DefaultRouter()
@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^register/', register),
     url(r'^login/', login),
+    url(r'^accept_invite/', accept_invite),
 ]
