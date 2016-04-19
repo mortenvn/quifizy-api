@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now, timedelta
 from oauthlib.common import generate_token
 
-from serializers import RegisterUserSerializer, PlayerSerializer
+from serializers import RegisterUserSerializer, PlayerSerializer, LoginUserSerializer
 from models import Player
 from oauth2_provider.models import Application, AccessToken
 
@@ -42,6 +42,20 @@ def register(request):
 
 
 @api_view(['POST'])
-def debug(request):
-    print request.data
-    return Response({'token': 'hoi'})
+def login(request):
+    qp = LoginUserSerializer(data=request.data)
+    if not qp.is_valid():
+        return Response(data=qp.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    username = qp['username'].value
+    password = qp['password'].value
+    client_id = qp['client_id'].value
+
+    app = Application.objects.get(client_id=client_id)
+    user = User.objects.get(username=username)
+    if not user.check_password(password):
+        return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
+
+    access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
+
+    return Response({'token': access_token.token}, status=status.HTTP_200_OK)

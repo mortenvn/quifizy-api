@@ -20,3 +20,9 @@ class RegisterUserSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
     client_id = serializers.CharField()
+
+
+class LoginUserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+    client_id = serializers.CharField()
