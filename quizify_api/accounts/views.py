@@ -51,13 +51,16 @@ def login(request):
     password = qp['password'].value
     client_id = qp['client_id'].value
 
-    app = Application.objects.get(client_id=client_id)
-    user = User.objects.get(username=username)
-    if not user:
-        return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
-    if not user.check_password(password):
-        return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
-    if not app:
+    try:
+        app = Application.objects.get(client_id=client_id)
+        user = User.objects.get(username=username)
+        if not user:
+            return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
+        if not user.check_password(password):
+            return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
+        if not app:
+            return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
+    except:
         return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
 
     access_token = AccessToken.objects.create(user=user, application=app, token=generate_token(), expires=now() + timedelta(days=1))
