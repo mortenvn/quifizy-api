@@ -26,3 +26,7 @@ class LoginUserSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
     client_id = serializers.CharField()
+
+
+class SearchUsernameSerializer(serializers.Serializer):
+    username = serializers.CharField()

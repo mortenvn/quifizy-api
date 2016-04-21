@@ -3,12 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import permissions
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.timezone import now, timedelta
 from oauthlib.common import generate_token
+from django.shortcuts import get_object_or_404
 
-from serializers import RegisterUserSerializer, PlayerSerializer, LoginUserSerializer
+from serializers import RegisterUserSerializer, PlayerSerializer, LoginUserSerializer, SearchUsernameSerializer
 from models import Player
 from oauth2_provider.models import Application, AccessToken
 
@@ -19,6 +19,16 @@ class PlayerViewSet(viewsets.ModelViewSet):
     # authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PlayerSerializer
+
+
+@api_view(['POST'])
+def search_by_username(request):
+    qp = SearchUsernameSerializer(data=request.data)
+    if not qp.is_valid():
+        return Response(data=qp.errors, status=status.HTTP_400_BAD_REQUEST)
+    user = get_object_or_404(User, username=qp['username'].value)
+    player = get_object_or_404(Player, user=user)
+    return Response(data=PlayerSerializer(player).data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

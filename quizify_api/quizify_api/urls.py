@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from quiz.views import CategoryViewSet, GameViewSet, RoundViewSet, accept_invite
-from accounts.views import register, PlayerViewSet, login
+from accounts.views import register, PlayerViewSet, login, search_by_username
 
 router = routers.DefaultRouter()
 router.register(r'categories', CategoryViewSet)
@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^register/', register),
     url(r'^login/', login),
     url(r'^accept_invite/', accept_invite),
+    url(r'^search_by_username/', search_by_username),
 ]
