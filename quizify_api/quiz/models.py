@@ -20,7 +20,7 @@ class Game(models.Model):
 
 class Round(models.Model):
     category = models.ForeignKey(Category)
-    game = models.ForeignKey(Game, related_name='rounds', null=True)  # Todo: Fjern null = True
+    game = models.ForeignKey(Game, related_name='rounds')
 
     STATUS_TYPES = (
         ('active', 'active'),

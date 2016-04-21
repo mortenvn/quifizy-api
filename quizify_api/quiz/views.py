@@ -113,7 +113,7 @@ def accept_invite(request):
     game.save()
 
     category = Category.objects.get(id=category_id)
-    new_round = generate_round(game, category, request.user.player)
+    generate_round(game, category, request.user.player)
     # TODO: Send notification to player1
     test = GameSerializer(game, context={'request': request}).data
 

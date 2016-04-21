@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from songs.models import Category, Song
-from quiz.models import *
+from quiz.models import Question, Round, Game
 from accounts.serializers import PlayerSerializer
 
 

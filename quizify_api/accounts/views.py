@@ -16,7 +16,6 @@ from oauth2_provider.models import Application, AccessToken
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
     http_method_names = ('get',)
-    # authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PlayerSerializer
 
@@ -68,11 +67,7 @@ def login(request):
     try:
         app = Application.objects.get(client_id=client_id)
         user = User.objects.get(username=username)
-        if not user:
-            return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
-        if not user.check_password(password):
-            return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
-        if not app:
+        if not (user or app or user.check_password(password)):
             return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)
     except:
         return Response({'error': 'access denied'}, status=status.HTTP_403_FORBIDDEN)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from quiz.models import *
+from quiz.models import Game, Round, Question
 
 
 class GameAdmin(admin.ModelAdmin):

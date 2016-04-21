@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+
 class Song(models.Model):
     spotify_uri = models.CharField(max_length=22)
     name = models.CharField(max_length=100, blank=True, null=True)
