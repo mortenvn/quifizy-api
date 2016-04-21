@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from songs.models import *
+from songs.models import Song, Category
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -8,7 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class SongAdmin(admin.ModelAdmin):
-    list_display = ('spotify_uri',)
+    list_display = ('spotify_uri', 'name', 'artist',)
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Song, SongAdmin)
