@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.fields import CurrentUserDefault
 
 from songs.models import Category, Song
 from quiz.models import *
@@ -20,23 +19,21 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name', 'songs')
 
 
-class ScoreSerializer(serializers.HyperlinkedModelSerializer):
-    player = PlayerSerializer()
-
-    class Meta:
-        model = Score
-        fields = ('player', 'answer_time', 'answered_correctly')
+# class ScoreSerializer(serializers.HyperlinkedModelSerializer):
+#     player = PlayerSerializer()
+#
+#     class Meta:
+#         model = Score
+#         fields = ('player', 'answer_time', 'answered_correctly')
 
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     correct_answer = SongSerializer()
     alternatives = SongSerializer(many=True)
-    score_player1 = ScoreSerializer()
-    score_player2 = ScoreSerializer()
 
     class Meta:
         model = Question
-        fields = ('correct_answer', 'alternatives', 'score_player1', 'score_player2')
+        fields = ('correct_answer', 'alternatives')
 
 
 class RoundSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,7 +43,7 @@ class RoundSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Round
-        fields = ('id', 'status', 'whos_turn', 'winner', 'category', 'questions')
+        fields = ('id', 'status', 'whos_turn', 'winner', 'category', 'questions', 'player1_score', 'player2_score')
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):
