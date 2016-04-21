@@ -34,15 +34,7 @@ class Round(models.Model):
     player2_score = models.IntegerField(blank=True, null=True)
 
 
-# class Score(models.Model):
-#     player = models.ForeignKey(Player)
-#     answer_time = models.DurationField()
-#     answered_correctly = models.BooleanField() # TODO: Remove
-
-
 class Question(models.Model):
     round = models.ForeignKey(Round, related_name='questions')
     correct_answer = models.ForeignKey(Song, related_name='correct_answer')
     alternatives = models.ManyToManyField(Song, related_name='alternatives')
-    # score_player1 = models.ForeignKey(Score, related_name='score_player1', blank=True, null=True)
-    # score_player2 = models.ForeignKey(Score, related_name='score_player2', blank=True, null=True)
