@@ -5,7 +5,7 @@ import random
 def generate_round(game, category, whos_turn):
     round = Round.objects.create(category=category, game=game, status='active', whos_turn=whos_turn)
     songs = list(Song.objects.all())
-    number_of_questions = 4
+    number_of_questions = 5
 
     for i in range(0, number_of_questions):
         random.shuffle(songs)
