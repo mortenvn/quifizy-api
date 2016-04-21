@@ -32,7 +32,7 @@ class RoundViewSet(viewsets.ModelViewSet):
         category = Category.objects.get(id=qp['category'].value)
         round = generate_round(game, category, request.user.player)
         # TODO: Notification
-        return Response(data=RoundSerializer(round, context={'request': request}).data, status=status.HTTP_201_CREATED)
+        return Response(data=GameSerializer(game, context={'request': request}).data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk):
         qp = UpdateRoundSerializer(data=request.data)
