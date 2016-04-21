@@ -1,21 +1,70 @@
 from rest_framework import permissions, status, viewsets
-# from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from permissions import PartOfGame
-from serializers import CategorySerializer, RoundSerializer, GameSerializer, NewGameSerializer, InviteSerializer
-from models import Game
+from permissions import PartOfGame, PartOfRound
+from serializers import CategorySerializer, RoundSerializer, GameSerializer, NewGameSerializer, \
+    InviteSerializer, NewRoundSerializer, UpdateRoundSerializer
+from models import Game, Round
 from accounts.models import Player
 from songs.models import Category
 from utils import generate_round
 
 
+class RoundViewSet(viewsets.ModelViewSet):
+    queryset = Round.objects.all()
+    http_method_names = ('put', 'post',)
+    permission_classes = (permissions.IsAuthenticated, PartOfRound)
+    serializer_class = RoundSerializer
+
+    def create(self, request):
+        qp = NewRoundSerializer(data=request.data)
+        if not qp.is_valid():
+            return Response(data=qp.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check that old rounds are completed
+        rounds = Round.objects.all(game=qp['game'].value, status='active')
+        if rounds is not None:
+            return Response(data={"error": "Previous round not completed"}, status=status.HTTP_400_BAD_REQUEST)
+
+        game = Game.objects.get(id=qp['game'].value)
+        category = Category.objects.get(id=qp['category'].value)
+        round = generate_round(game, category, request.user.player)
+        # TODO: Notification
+        return Response(data=RoundSerializer(round).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk):
+        qp = UpdateRoundSerializer(data=request.data)
+        if not qp.is_valid():
+            return Response(data=qp.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            round = Round.objects.get(id=pk)
+            game = Game.objects.get(id=round.game)
+            # Update score and whos_turn
+            if request.user.player.id == game.player1.id:
+                round.player1_score = qp['score'].value
+                round.whos_turn = game.player2.id
+            else:
+                round.player2_score = qp['score'].value
+                round.whos_turn = game.player1.id
+
+            # If turn complete, update status and remove whos turn attribute
+            if round.player1_score and round.player2_score:
+                round.status = 'completed'
+                round.whos_turn = None
+            round.save()
+        except:
+            return Response(data={"error": "Round not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # TODO: Notification
+        return Response(data=RoundSerializer(round).data, status=status.HTTP_200_OK)
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     http_method_names = ('get',)
-    # authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CategorySerializer
 
@@ -23,7 +72,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
     http_method_names = ('get', 'put', 'post',)
-    # authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated, PartOfGame,)
     serializer_class = GameSerializer
 
@@ -69,18 +117,3 @@ def accept_invite(request):
     test = GameSerializer(game, context={'request': request}).data
 
     return Response(data=test, status=status.HTTP_201_CREATED)
-
-
-# @api_view(['POST'])
-# def new_round(request):
-#     # TODO: Check that it is users turn
-#     game = Game.objects.get(id=game_id)
-#     if not game.player2.id == request.user.player.id:
-#         return Response(data={"non_field_errors": ["Not permitted"]}, status=status.HTTP_403_FORBIDDEN)
-#
-#     category = Category.objects.get(id=category_id)
-#     new_round = generate_round(game, category, request.user.player)
-#     # TODO: Send notification to player1
-#     test = GameSerializer(game, context={'request': request}).data
-#
-#     return Response(data=test, status=status.HTTP_201_CREATED)

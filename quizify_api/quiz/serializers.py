@@ -74,6 +74,28 @@ class NewGameSerializer(serializers.Serializer):
         return data
 
 
+class NewRoundSerializer(serializers.Serializer):
+    category = serializers.IntegerField()
+    game = serializers.IntegerField()
+
+    def validate(self, data):
+        category_id = data['category']
+        game_id = data['game']
+        try:
+            category = Category.objects.get(id=category_id)
+        except:
+            raise serializers.ValidationError("Invalid category id")
+        try:
+            game = Game.objects.get(id=game_id)
+        except:
+            raise serializers.ValidationError("Invalid game id")
+        return data
+
+
+class UpdateRoundSerializer(serializers.Serializer):
+    score = serializers.IntegerField()
+
+
 class InviteSerializer(serializers.Serializer):
     game = serializers.IntegerField()
     category = serializers.IntegerField()
