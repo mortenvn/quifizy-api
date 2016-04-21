@@ -9,7 +9,7 @@ from serializers import CategorySerializer, RoundSerializer, GameSerializer, New
 from models import Game, Round
 from accounts.models import Player
 from songs.models import Category
-from utils import generate_round
+from generate_round import generate_round
 
 
 class RoundViewSet(viewsets.ModelViewSet):

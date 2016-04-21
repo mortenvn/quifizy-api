@@ -14,6 +14,7 @@ class Command(BaseCommand):
         songs = Song.objects.all()
         for song in songs:
             if not song.url or not song.artist or not song.name:
+                self.stdout.write("Fetching for song with URI " + song.spotify_uri)
                 data = self.get_spotify_data(song.spotify_uri)
                 song.artist = data['artists'][0]['name']
                 song.name = data['name']

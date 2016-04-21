@@ -3,7 +3,7 @@ from quiz.models import *
 
 
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('player1','player2','invitation_status',)
+    list_display = ('player1', 'player2', 'invitation_status',)
 
 
 class RoundAdmin(admin.ModelAdmin):
