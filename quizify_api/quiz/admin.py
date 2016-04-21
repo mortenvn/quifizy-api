@@ -7,7 +7,7 @@ class GameAdmin(admin.ModelAdmin):
 
 
 class RoundAdmin(admin.ModelAdmin):
-    list_display = ('category', 'status', 'whos_turn', 'whos_turn', 'winner',)
+    list_display = ('category', 'status', 'whos_turn', 'winner',)
 
 
 class QuestionAdmin(admin.ModelAdmin):
