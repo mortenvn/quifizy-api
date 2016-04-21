@@ -19,14 +19,6 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name', 'songs')
 
 
-# class ScoreSerializer(serializers.HyperlinkedModelSerializer):
-#     player = PlayerSerializer()
-#
-#     class Meta:
-#         model = Score
-#         fields = ('player', 'answer_time', 'answered_correctly')
-
-
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     correct_answer = SongSerializer()
     alternatives = SongSerializer(many=True)

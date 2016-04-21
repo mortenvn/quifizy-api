@@ -28,7 +28,7 @@ class Round(models.Model):
     )
 
     status = models.CharField(max_length=20, choices=STATUS_TYPES)
-    whos_turn = models.ForeignKey(Player, related_name='whos_turn')
+    whos_turn = models.ForeignKey(Player, related_name='whos_turn', blank=True, null=True)
     winner = models.ForeignKey(Player, related_name='winner', blank=True, null=True)
     player1_score = models.IntegerField(blank=True, null=True)
     player2_score = models.IntegerField(blank=True, null=True)

@@ -24,15 +24,15 @@ class RoundViewSet(viewsets.ModelViewSet):
             return Response(data=qp.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Check that old rounds are completed
-        rounds = Round.objects.all(game=qp['game'].value, status='active')
-        if rounds is not None:
+        active_rounds = Round.objects.filter(game=qp['game'].value, status='active')
+        if active_rounds:
             return Response(data={"error": "Previous round not completed"}, status=status.HTTP_400_BAD_REQUEST)
 
         game = Game.objects.get(id=qp['game'].value)
         category = Category.objects.get(id=qp['category'].value)
         round = generate_round(game, category, request.user.player)
         # TODO: Notification
-        return Response(data=RoundSerializer(round).data, status=status.HTTP_201_CREATED)
+        return Response(data=RoundSerializer(round, context={'request': request}).data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk):
         qp = UpdateRoundSerializer(data=request.data)
@@ -41,25 +41,26 @@ class RoundViewSet(viewsets.ModelViewSet):
 
         try:
             round = Round.objects.get(id=pk)
-            game = Game.objects.get(id=round.game)
+            game = Game.objects.get(id=round.game.id)
             # Update score and whos_turn
             if request.user.player.id == game.player1.id:
                 round.player1_score = qp['score'].value
-                round.whos_turn = game.player2.id
+                round.whos_turn = game.player2
             else:
                 round.player2_score = qp['score'].value
-                round.whos_turn = game.player1.id
+                round.whos_turn = game.player1
 
             # If turn complete, update status and remove whos turn attribute
             if round.player1_score and round.player2_score:
                 round.status = 'completed'
                 round.whos_turn = None
             round.save()
-        except:
+        except Exception, e:
+            print e
             return Response(data={"error": "Round not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # TODO: Notification
-        return Response(data=RoundSerializer(round).data, status=status.HTTP_200_OK)
+        return Response(data=RoundSerializer(round, context={'request': request}).data, status=status.HTTP_200_OK)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
