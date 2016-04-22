@@ -9,6 +9,8 @@ class Song(models.Model):
     url = models.URLField(blank=True, null=True)
 
     def __unicode__(self):
+        if self.name and self.artist:
+            return '%s - %s' % (self.name, self.artist)
         return self.spotify_uri
 
 
