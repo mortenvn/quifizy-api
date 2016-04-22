@@ -94,12 +94,11 @@ class GameViewSet(viewsets.ModelViewSet):
 
         # Check if a game between the two players already exists
         existing_games = Game.objects.filter(Q(player1=request.user.player, player2=player2) | Q(player2=request.user.player, player1=player2))
-        if existing_games is not None:
+        if len(existing_games) > 1:
             return Response(data={"non_field_errors": ["Game between player1 and player2 already exists"]}, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: Send notification to player2
         new_game = Game.objects.create(player1=request.user.player, player2=player2, invitation_status='sent')
-        game_score = OverallScore.objects.create(game=new_game)
 
         return Response(data=GameSerializer(new_game).data, status=status.HTTP_201_CREATED)
 
