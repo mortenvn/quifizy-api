@@ -45,17 +45,23 @@ class RoundViewSet(viewsets.ModelViewSet):
             # Update score and whos_turn
             if request.user.player.id == game.player1.id:
                 round.player1_score = qp['score'].value
-                game.player1_score = game.player1_score + qp['score'].value
                 round.whos_turn = game.player2
             else:
                 round.player2_score = qp['score'].value
-                game.player2_score = game.player2_score + qp['score'].value
                 round.whos_turn = game.player1
 
             # If turn complete, update status and remove whos turn attribute
             if round.player1_score and round.player2_score:
                 round.status = 'completed'
                 round.whos_turn = None
+                if round.player1_score > round.player2_score:
+                    game.player1_score += 1
+                elif round.player2_score > round.player1_score:
+                    game.player2_score += 1
+                else:
+                    game.player1_score += 1
+                    game.player2_score += 1
+                game.save()
             round.save()
         except Exception, e:
             print e
