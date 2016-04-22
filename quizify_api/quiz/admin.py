@@ -3,11 +3,11 @@ from quiz.models import *
 
 
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('player1', 'player2', 'invitation_status',)
+    list_display = ('id', 'player1', 'player2', 'invitation_status',)
 
 
 class RoundAdmin(admin.ModelAdmin):
-    list_display = ('category', 'status', 'whos_turn', 'winner',)
+    list_display = ('id', 'category', 'status', 'whos_turn', 'winner',)
 
 
 class QuestionAdmin(admin.ModelAdmin):
