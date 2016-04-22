@@ -8,6 +8,8 @@ from songs.models import Song, Category
 class Game(models.Model):
     player1 = models.ForeignKey(Player, related_name='player1')
     player2 = models.ForeignKey(Player, related_name='player2')
+    player1_score = models.IntegerField(default=0)
+    player2_score = models.IntegerField(default=0)
 
     INVITATION_STATUS_TYPES = (
         ('sent', 'sent'),
@@ -16,6 +18,9 @@ class Game(models.Model):
     )
 
     invitation_status = models.CharField(max_length=20, choices=INVITATION_STATUS_TYPES)
+
+    def __unicode__(self):
+        return str(self.id)
 
 
 class Round(models.Model):

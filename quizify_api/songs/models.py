@@ -14,7 +14,7 @@ class Song(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    songs = models.ManyToManyField(Song)
+    songs = models.ManyToManyField(Song, related_name="category")
 
     class Meta:
         verbose_name_plural = 'categories'

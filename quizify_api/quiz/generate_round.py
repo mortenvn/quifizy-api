@@ -1,10 +1,10 @@
-from models import Round, Question, Song
+from models import Round, Question, Song, Category
 import random
 
 
 def generate_round(game, category, whos_turn):
     round = Round.objects.create(category=category, game=game, status='active', whos_turn=whos_turn)
-    songs = list(Song.objects.all())
+    songs = list(Song.objects.filter(category=Category.objects.get(id=category.id)))
     number_of_questions = 5
 
     for i in range(0, number_of_questions):

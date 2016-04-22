@@ -45,7 +45,7 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Game
-        fields = ('id', 'player1', 'player2', 'invitation_status', 'rounds')
+        fields = ('id', 'player1', 'player2', 'player1_score', 'player2_score', 'invitation_status', 'rounds')
 
 
 class NewGameSerializer(serializers.Serializer):

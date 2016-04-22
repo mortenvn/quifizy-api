@@ -45,9 +45,11 @@ class RoundViewSet(viewsets.ModelViewSet):
             # Update score and whos_turn
             if request.user.player.id == game.player1.id:
                 round.player1_score = qp['score'].value
+                game.player1_score = game.player1_score + qp['score'].value
                 round.whos_turn = game.player2
             else:
                 round.player2_score = qp['score'].value
+                game.player2_score = game.player2_score + qp['score'].value
                 round.whos_turn = game.player1
 
             # If turn complete, update status and remove whos turn attribute
@@ -92,6 +94,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
         # TODO: Send notification to player2
         new_game = Game.objects.create(player1=request.user.player, player2=player2, invitation_status='sent')
+        game_score = OverallScore.objects.create(game=new_game)
 
         return Response(data=GameSerializer(new_game).data, status=status.HTTP_201_CREATED)
 
